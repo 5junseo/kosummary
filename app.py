@@ -1,22 +1,38 @@
-from flask import Flask, render_template, make_response, request, Response, jsonify, current_app, redirect
+from flask import Flask, render_template, make_response, request, redirect
 import json
 from time import time
-from random import random
 import os
-
 import requests
+import config
 
-from db import dbModule
+from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
+
+from database import dbModule
 
 app = Flask(__name__)  # Flask 객체 선언
 app.config['JSON_AS_ASCII'] = False  # 한글 깨짐 방지
 
 
-# Front로부터 json 파일 요청 처리
+# YouTube API Build
+DEVELOPER_KEY = config.key
+YOUTUBE_API_SERVICE_NAME = 'youtube'
+YOUTUBE_API_VERSION = 'v3'
+
+
+# 시청자 수 그래프
 @app.route('/live-data')
 def live_data():
-    # DB에서 데이터 받아와 results에 저장
-    results = [time() * 1000, random() * 100]
+    youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION, developerKey=DEVELOPER_KEY)
+
+    search_response = youtube.videos().list(
+        part="id, snippet, liveStreamingDetails",
+        id="py_phbQxy5Y"
+    ).execute()
+
+    viewers = search_response['items'][0]['liveStreamingDetails']['concurrentViewers']
+
+    results = [time() * 1000, int(viewers)]
     response = make_response(json.dumps(results))
     response.content_type = 'application/json'
     return response
@@ -26,6 +42,38 @@ def live_data():
 def hello():
     print(os.path.dirname(__file__))
     return render_template('index.html')
+
+
+# 시청자 수, 방송 시간 return
+@app.route("/summary/<video_id>", methods=['GET'])
+def summary(video_id):
+    youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION, developerKey=DEVELOPER_KEY)
+
+    search_response = youtube.videos().list(
+        part="id, snippet, liveStreamingDetails",
+        id=video_id
+    ).execute()
+
+    viewers = search_response['items'][0]['liveStreamingDetails']['concurrentViewers']
+    start_time = search_response['items'][0]['liveStreamingDetails']['actualStartTime']
+
+    results = [viewers, start_time]
+    response = make_response(json.dumps(results))
+    response.content_type = 'application/json'
+    return response
+
+
+@app.route("/test/<video_id>", methods=['GET'])
+def testSelect(video_id):
+    db_class = dbModule.Database()
+    sql = "SELECT title, url FROM summary.search WHERE videoid=%s"
+    #db_class.execute(sql, video_id)
+    #db_class.commit()
+
+    data = db_class.executeAll(sql, video_id)
+    db_class.commit()
+
+    return str(data)
 
 
 @app.route('/search', methods=['GET', 'POST'])
@@ -75,7 +123,6 @@ def index():
 
             }
             videos.append(video_data)
-            # print(video_data)
 
             db_class = dbModule.Database()
             sql = "INSERT INTO summary.search(videoid, url, thumbnail, title, viewer, starttime) \
