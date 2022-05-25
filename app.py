@@ -1,6 +1,7 @@
 from flask import Flask, render_template, make_response, request, redirect
 import json
 from time import time
+from random import random
 import os
 import requests
 import config
@@ -13,15 +14,25 @@ from database import dbModule
 app = Flask(__name__)  # Flask 객체 선언
 app.config['JSON_AS_ASCII'] = False  # 한글 깨짐 방지
 
-
 # YouTube API Build
 DEVELOPER_KEY = config.key
 YOUTUBE_API_SERVICE_NAME = 'youtube'
 YOUTUBE_API_VERSION = 'v3'
 
 
+# 단어 빈도수
+@app.route('/live-words')
+def live_words():
+    # DB에서 데이터 받아와 results에 저장 # [["단어", 개수],...]
+    results = [["AAAA",random() * 100], ["BBBB",random() * 100],["CCCC",random() * 100],["DDDD",random() * 100],["EEEE",random() * 100]]
+    results.sort(key=lambda x:x[1], reverse=True)
+    response = make_response(json.dumps(results))
+    response.content_type = 'application/json'
+    return response
+
+
 # 시청자 수 그래프
-@app.route('/live-data')
+@app.route('/live-viewers')
 def live_data():
     youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION, developerKey=DEVELOPER_KEY)
 
@@ -38,29 +49,41 @@ def live_data():
     return response
 
 
+# 감정 분석 그래프
+@app.route('/live-segment')
+def live_segment():
+    a = random() * 100
+    results = [a, 100 - a]  # [긍정 비율, 부정 비율]
+    response = make_response(json.dumps(results))
+    response.content_type = 'application/json'
+    return response
+
+
 @app.route("/")
 def hello():
-    print(os.path.dirname(__file__))
     return render_template('index.html')
 
 
-# 시청자 수, 방송 시간 return
+# 시청자 수, 방송 시간, 좋아요 수 return
 @app.route("/summary/<video_id>", methods=['GET'])
 def summary(video_id):
     youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION, developerKey=DEVELOPER_KEY)
 
     search_response = youtube.videos().list(
-        part="id, snippet, liveStreamingDetails",
+        part="id, snippet, liveStreamingDetails, statistics",
         id=video_id
     ).execute()
 
     viewers = search_response['items'][0]['liveStreamingDetails']['concurrentViewers']
     start_time = search_response['items'][0]['liveStreamingDetails']['actualStartTime']
+    like_count = search_response['items'][0]['statistics']['likeCount']
 
-    results = [viewers, start_time]
+    results = [viewers, start_time, like_count]
+
     response = make_response(json.dumps(results))
     response.content_type = 'application/json'
     return response
+
 
 
 @app.route("/test/<video_id>", methods=['GET'])
