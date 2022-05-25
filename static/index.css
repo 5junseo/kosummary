@@ -1,0 +1,226 @@
+@import url("https://fonts.googleapis.com/css?family=Jockey+One:400|Noto+Sans+Arabic:400");
+@import url('https://webfontworld.github.io/pretendard/Pretendard.css');
+
+body{box-sizing: border-box; margin: 0px;}
+
+:root {
+    --black: 
+  rgba(0, 0, 0, 1);
+    --fuchsia-blue: 
+  rgba(47,46,117,1);
+    --dull-lavender: 
+  rgb(218, 217, 251);
+    --alice_blue:
+    rgb(223, 238, 251);
+
+    --white: 
+  rgba(255, 255, 255, 1);
+  
+    --font-size-s: 18px;
+    --font-size-m: 22px;
+    --font-size-l: 30px;
+    --font-size-xl: 50px;
+  
+    --font-family-jockey_one: "Pretendard";
+    --font-family-noto_sans_arabic: "Pretendard";
+  }
+  
+  
+  
+  .notosansarabic-30px {
+    color: var(--white);
+    font-family: var(--font-family-noto_sans_arabic);
+    font-size: var(--font-size-l);
+    font-weight: 400;
+    font-style: normal;
+  }
+  .jockeyone-50px {
+    color: var(--fuchsia-blue);
+    font-family: var(--font-family-jockey_one);
+    font-size: var(--font-size-xl);
+    font-weight: 400;
+    font-style: normal;
+  }
+  .jockeyone-18px {
+    color: var(--fuchsia-blue);
+    font-family: var(--font-family-jockey_one);
+    font-size: var(--font-size-s);
+    font-weight: 400;
+    font-style: normal;
+  }
+  .jockeyone-22px {
+    color: var(--fuchsia-blue);
+    font-family: var(--font-family-jockey_one);
+    font-size: var(--font-size-m);
+    font-weight: 400;
+    font-style: normal;
+  }
+  .notosansarabic-18px {
+    color: var(--black);
+    font-family: var(--font-family-noto_sans_arabic);
+    font-size: var(--font-size-m);
+    font-weight: 400;
+    font-style: normal;
+  }
+
+
+  .background{
+    position: relative;
+    height: 100vh;
+    background-color: var(--fuchsia-blue);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .container{
+    height: 90%;
+    width: 95%;
+    background-color: aliceblue;
+    border-top-right-radius: 20px;
+    border-top-left-radius: 20px;
+  }
+
+.first_line{
+  height: 20%;
+  justify-content: center;
+  align-items: center;
+}
+.title-1{
+  left:90px;
+  letter-spacing: 0;
+  float: left;
+  box-sizing: border-box;
+  padding-left: 30px;
+  padding-top: 30px;
+}
+.title-2{
+  left: 400px;
+  letter-spacing: 0;
+  float: left;
+  font-weight: bold;
+  box-sizing: border-box;
+  padding-left: 20px;
+  padding-top: 30px;
+}
+
+.search_box{
+  width: 30%;
+  height: 30%;
+  float: right;
+  margin-top: 2.5%;
+  margin-right: 5%;
+}
+.search_circle{
+    width: 10%;
+    height: 100%;
+    background-color: var(--fuchsia-blue);
+    border-radius: 51%;
+    float: right;
+    margin-top: -40px;
+    margin-right: 22px;
+}
+
+
+.loupe{
+    width: 70%;
+    height: 70%;
+    float: right;
+    margin-top: 5px;
+    margin-right: 5px;
+}
+.second_line{
+    height: 40%;
+    background-color: rgb(255, 255, 255);
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+}
+.secondbox{
+    margin-top: 15px;
+    display: inline-block;
+    width: 24%;
+    height: 90%;
+    background-color: rgb(48, 141, 151);
+    border-radius: 20px;
+}
+.secondbox_1 {
+    display: inline-block;
+    position: relative;
+    background-color: rgb(250, 223, 187);
+}
+
+.block_title1{
+    display: flex;
+    margin-left : 20px;
+    margin-top: 20px;
+}
+
+.number-1_wrapper{
+    display: flex;
+}
+.number-1{
+    width: calc(1.3em / 0.7);
+    height: calc(1.3em / 0.7);
+    border-radius: 50%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    font-size: 1.8em;
+}
+
+.text-1{
+    text-align: left;
+    line-height: 50px;
+    margin-left : 10px;
+}
+
+.secondbox_2 {
+    display: inline-block;
+    position: relative;
+    background-color: rgb(164, 230, 199);
+}
+
+.secondbox_3 {
+    display: inline-block;
+    position: relative;
+    background-color: rgb(252, 206, 238);
+}
+
+.secondbox_4 {
+    display: inline-block;
+    position: relative;
+    background-color: rgb(240, 232, 145);
+}
+
+.third_line{
+    display: flex;
+    justify-content: space-between;
+
+    height: 40%;
+    background-color: var(--dull-lavender);
+}
+.thirdbox_1{
+    width : 37%;
+}
+.thirdbox_2{
+    width : 25%;
+}
+.thirdbox_3{
+    width : 38%;
+}
+
+#viewers-container{
+    margin-left:30px;
+    margin-top: 30px;
+}
+
+.contents{
+    text-align:center;
+    height: 80%;
+    display: flex;
+    justify-content: center;
+    line-height : 260px;
+    font-size: 40px;
+}
