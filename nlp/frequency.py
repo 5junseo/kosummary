@@ -5,13 +5,20 @@ okt = Okt()
 
 
 def morph_counters(line):
-    noun = tag_del(line)
-    for i, v in enumerate(noun):
-        if len(v) < 2:
-            noun.pop(i)
-    count = Counter(noun)
-    noun_list = count.most_common(100)
-    return noun_list
+    text = emoticon_del(line)
+    print(text)
+    if text != "":
+        morph = tag_del(text)
+        for i, v in enumerate(morph):
+            if len(v) < 2:
+                morph.pop(i)
+        count = Counter(morph)
+        morph_list = count.most_common(100)
+    else:
+        morph = okt.morphs("Emoticon")
+        temp = Counter(morph)
+        morph_list = temp.most_common(1)
+    return morph_list
 
 
 def noun_counters(line):
@@ -52,7 +59,7 @@ def emoticon_ext(text):
 def tag_del(text):
     analysis = okt.pos(text, norm=True, stem=True)
     for i, tag in enumerate(analysis):
-        print(i, " : ", tag)
+        # print(i, " : ", tag)
         if 'Josa' in tag:
             analysis[i] = "None"
         elif 'Punctuation' in tag:
