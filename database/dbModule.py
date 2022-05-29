@@ -10,15 +10,21 @@ class Database:
                                   charset='utf8mb4')
         self.cursor = self.db.cursor(pymysql.cursors.DictCursor)
 
-    def execute(self, query, args={}):
+    def execute(self, query, args=None):
+        if args is None:
+            args = {}
         self.cursor.execute(query, args)
 
-    def executeOne(self, query, args={}):
+    def executeOne(self, query, args=None):
+        if args is None:
+            args = {}
         self.cursor.execute(query, args)
         row = self.cursor.fetchone()
         return row
 
-    def executeAll(self, query, args={}):
+    def executeAll(self, query, args=None):
+        if args is None:
+            args = {}
         self.cursor.execute(query, args)
         row = self.cursor.fetchall()
         return row

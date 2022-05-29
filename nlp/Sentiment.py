@@ -56,11 +56,11 @@ def predict_pos_neg(review):
     model = load_model('korean_nlp_v2.h5')
     data = np.expand_dims(np.asarray(tf).astype('float32'), axis=0)
     score = float(model.predict(data))
-    if score > 0.6:
-        print("[{}]는 {:.2f}% 긍정 추측^_^\n".format(review, score * 100))
-    elif (score <= 0.6 and score >= 0.4):
-        print("[{}]는 {:.2f}% 중립 추측-_-\n".format(review, score * 100))
-    else:
-        print("[{}]는 {:.2f}% 부정 추측ㅠ_ㅠ;\n".format(review, (1 - score) * 100))
+    # if score > 0.6:
+    #    print("[{}]는 {:.2f}% 긍정 추측^_^\n".format(review, score * 100))
+    # elif (score <= 0.6 and score >= 0.4):
+    #    print("[{}]는 {:.2f}% 중립 추측-_-\n".format(review, score * 100))
+    # else:
+    #    print("[{}]는 {:.2f}% 부정 추측ㅠ_ㅠ;\n".format(review, (1 - score) * 100))
 
     return score * 100

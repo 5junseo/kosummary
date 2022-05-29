@@ -11,14 +11,18 @@ from frequency import morph_counters
 okt = Okt()
 
 
+def DB_counters_send(text):
+    x = morph_counters(text)
+    print(x)
+    for i in range(len(x)):
+        print(x[i][0])
+        print(x[i][1])
+
+
 def Get_Api(key):
     pafy.set_api_key('AIzaSyCzJGbHRKjQTMtOfVlxBMslPehk5qXHlQ0')
 
     v_id = key
-    # v = pafy.new(key)
-    # title = v.title
-    # author = v.author
-    # published = v.published
 
     chat = pytchat.create(video_id=key)
     while chat.is_alive():
@@ -26,17 +30,18 @@ def Get_Api(key):
             data = chat.get()
             items = data.items
             for c in items:
-                print(f"{c.datetime} [{c.author.name}]- {c.message}")
-                print(noun_counters(c.message))
-                print(morph_counters(c.message))
-                predict_pos_neg(c.message)
+                # print(f"{c.datetime} [{c.author.name}]- {c.message}")
+                # print(morph_counters(c.message))
 
-                db_class = dbModule.Database()
-                sql = "INSERT INTO summary.chatting(videoid, name, reaction_score) \
-                       VALUES('%s', '%s', '%s')" % \
-                      (v_id, c.author.name, predict_pos_neg(c.message))
-                db_class.execute(sql)
-                db_class.commit()
+                x = morph_counters(c.message)
+
+                for i in range(len(x)):
+                    db_class = dbModule.Database()
+                    sql = "INSERT INTO summary.chatting(videoid, reaction_score, word, word_count) \
+                                           VALUES('%s', '%s', '%s', '%s')" % \
+                          (v_id, predict_pos_neg(c.message), x[i][0], x[i][1])
+                    db_class.execute(sql)
+                    db_class.commit()
 
                 data.tick()
                 time.sleep(0.05)
