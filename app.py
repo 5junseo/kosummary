@@ -6,9 +6,8 @@ import os
 import requests
 import config
 import pymysql
-
+from datetime import datetime
 from googleapiclient.discovery import build
-from googleapiclient.errors import HttpError
 
 from database import dbModule
 
@@ -38,32 +37,14 @@ def live_words():
     conn1.commit()
 
     # print(datas)
-    # for i in range(len(datas)):
-    #   print(datas[i][0])
+    #     # for i in range(len(datas)):
+    #     #   print(datas[i][0])
 
     results = [[datas[0][0], datas[0][1]], [datas[1][0], datas[1][1]], [datas[2][0], datas[2][1]], [datas[3][0], datas[3][1]], [datas[4][0], datas[4][1]]]
     # results.sort(key=lambda x: x[1], reverse=True)
     response = make_response(json.dumps(results))
     response.content_type = 'application/json'
 
-    return response
-
-
-# 시청자 수 그래프
-@app.route('/live-viewers')
-def live_data():
-    youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION, developerKey=DEVELOPER_KEY)
-
-    search_response = youtube.videos().list(
-        part="id, snippet, liveStreamingDetails",
-        id="py_phbQxy5Y"
-    ).execute()
-
-    viewers = search_response['items'][0]['liveStreamingDetails']['concurrentViewers']
-
-    results = [time() * 1000, int(viewers)]
-    response = make_response(json.dumps(results))
-    response.content_type = 'application/json'
     return response
 
 
@@ -87,7 +68,7 @@ def live_segment():
     except ZeroDivisionError:
         avg_reaction = 50
 
-    print(int(avg_reaction))
+    # print(int(avg_reaction))
 
     results = [int(avg_reaction), 100 - int(avg_reaction)]  # [긍정 비율, 부정 비율]
     response = make_response(json.dumps(results))
@@ -100,7 +81,6 @@ def hello():
     return render_template('index.html')
 
 
-# 채팅 수, 시청자 수, 방송 시간, 좋아요 수 return
 @app.route("/summary/<video_id>", methods=['GET'])
 def summary(video_id):
     youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION, developerKey=DEVELOPER_KEY)
@@ -114,51 +94,76 @@ def summary(video_id):
 
     # 채팅 수
     sql = "SELECT COUNT(id) FROM summary.chatting WHERE videoid = %s"
-    cur.execute(sql, "py_phbQxy5Y")
+    cur.execute(sql, video_id)
     chat_num = cur.fetchall()
 
     # print(chat_num[0][0])
-
     conn.commit()
 
+    # 현재 시청자 수
     viewers = search_response['items'][0]['liveStreamingDetails']['concurrentViewers']
-    start_time = search_response['items'][0]['liveStreamingDetails']['actualStartTime']
+
+    # 누적 시청자 수
+    viewers_accumulate = search_response['items'][0]['statistics']['viewCount']
+
+    # 방송 제목
+    streaming_title = search_response['items'][0]['snippet']['title']
+
+    # 구독자 수
+    channel_id = search_response['items'][0]['snippet']['channelId']
+
+    channel_response = youtube.channels().list(
+        part='id, snippet, statistics',
+        id=channel_id
+    ).execute()
+
+    subscriber = channel_response['items'][0]['statistics']['subscriberCount']
+
+    # 좋아요 수
     like_count = search_response['items'][0]['statistics']['likeCount']
 
-    results = [chat_num[0][0], viewers, start_time, like_count]
+    # 실시간 방송 썸네일
+    thumbnail = search_response['items'][0]['snippet']['thumbnails']['medium']['url']
 
-    response = make_response(json.dumps(results))
+    # 방송 런타임
+    start_time = search_response['items'][0]['liveStreamingDetails']['actualStartTime']
+    now = datetime.now()
+    past = datetime.strptime(start_time, "%Y-%m-%dT%H:%M:%SZ")
+    diff = now - past
+    daysH = diff.days * 24
+    hour = int(diff.seconds / 3600)
+    min = int(diff.seconds / 60) - hour * 60
+    sec = int(diff.seconds % 60)
+    runtime = "%d 시간 %d 분 %d 초" % (hour + daysH, min, sec)
+
+    # 실시간 방송 차트 시간
+    now = datetime.now()
+    now_time = now.strftime('%H:%M:%S')
+    viewers_chart = [float(int(now_time[3:5])) + int(now_time[6:8]) * 0.01, int(viewers)]
+
+    results = [chat_num[0][0], runtime, viewers, viewers_accumulate, streaming_title, subscriber, like_count, thumbnail, viewers_chart]
+
+    response = make_response(json.dumps(results, ensure_ascii=False))
     response.content_type = 'application/json'
     return response
-
-
-@app.route("/test/<video_id>", methods=['GET'])
-def testSelect(video_id):
-    db_class = dbModule.Database()
-    sql = "SELECT title, url FROM summary.search WHERE videoid=%s"
-
-    data = db_class.executeAll(sql, video_id)
-    db_class.commit()
-
-    return str(data)
 
 
 @app.route('/search', methods=['GET', 'POST'])
 def index():
     search_url = 'https://www.googleapis.com/youtube/v3/search'
     video_url = 'https://www.googleapis.com/youtube/v3/videos'
+    key = config.key
 
     videos = []
 
     if request.method == 'POST':
         search_params = {
-            'key': 'AIzaSyCzJGbHRKjQTMtOfVlxBMslPehk5qXHlQ0',
+            'key': key,
             'q': request.form.get('query'),
             'part': 'snippet',
             'maxResults': 9,
             'type': 'video',
             'eventType': 'live',
-            # 'order' : 'title',  viewCount
             'regionCode': 'KR'
         }
 
@@ -171,7 +176,7 @@ def index():
             video_ids.append(result['id']['videoId'])
 
         video_params = {
-            'key': 'AIzaSyCzJGbHRKjQTMtOfVlxBMslPehk5qXHlQ0',
+            'key': key,
             'id': ','.join(video_ids),
             'part': 'id,snippet,liveStreamingDetails',
             'maxResults': 9
@@ -186,18 +191,8 @@ def index():
                 'thumbnail': result['snippet']['thumbnails']['high']['url'],
                 'title': result['snippet']['title'],
                 'startTime': result['liveStreamingDetails']['actualStartTime'],
-                'viewer': result['liveStreamingDetails']['concurrentViewers']
-
             }
             videos.append(video_data)
-
-            # db_class = dbModule.Database()
-            # sql = "INSERT INTO summary.search(videoid, url, thumbnail, title, viewer, starttime) \
-            #                                VALUES('%s', '%s', '%s', '%s', '%s', '%s')" % \
-            #      (video_data["id"], video_data["url"], video_data["thumbnail"], video_data["title"],
-            #       video_data["viewer"], video_data["startTime"])
-            # db_class.execute(sql)
-            # db_class.commit()
 
     return render_template('index1.html', videos=videos)
 

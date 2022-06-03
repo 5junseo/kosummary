@@ -1,9 +1,19 @@
+function getTime() {
+			var d = new Date();
+
+			var s = leadingZeros(d.getFullYear(), 4) + '-'
+					+ leadingZeros(d.getMonth() + 1, 2) + '-'
+					+ leadingZeros(d.getDate(), 2) + ' ' +
+
+					leadingZeros(d.getHours(), 2) + ':'
+					+ leadingZeros(d.getMinutes(), 2);
+
+			return s;
+		}
+
+//words chart
 var chart;
 
-/**
- * Request data from the server, add it to the graph and set a timeout
- * to request again
- */
 function requestData_words() {
     $.ajax({
         url: '/live-words',
@@ -32,8 +42,8 @@ $(document).ready(function() {
     chart = new Highcharts.Chart({
         chart: {
             backgroundColor: '#DAD9FB',
-            width: 550,
-            height: 275,
+            width: 600,
+            height: 300,
             renderTo: 'words-container',
             defaultSeriesType: 'bar',
             events: {
@@ -96,93 +106,64 @@ $(document).ready(function() {
 
 });
 
-var chart_viewers;
-
-/**
- * Request data from the server, add it to the graph and set a timeout
- * to request again
- */
-function requestData_viewers() {
-    $.ajax({
-        url: '/live-viewers',
-        success: function(point) {
-            var series = chart_viewers.series[0],
-
-                shift = series.data.length > 20; // shift if the series is
-                                                 // longer than 20
-
-            // add the point
-            chart_viewers.series[0].addPoint(point, true, shift);
-
-            // call it again after one second
-            setTimeout(requestData_viewers, 1000);
-        },
-        cache: false
-    });
-}
-
-$(document).ready(function() {
-    chart_viewers = new Highcharts.Chart({
-        chart: {
-            backgroundColor: '#DAD9FB',
-            width: 530,
-            height: 275,
-            renderTo: 'viewers-container',
-            defaultSeriesType: 'spline',
-            events: {
-                load: requestData_viewers
-            }
-        },
-        credits: {
-            enabled : false
-        },
-        title: {
-            text: ''
-        },
-        xAxis: {
-            type: 'datetime',
-            tickPixelInterval: 150,
-            maxZoom: 20 * 1000
-        },
-        yAxis: {
-            title: "시청자수",
-        },
-        series: [{
-            name: 'Random data',
-            data: [],
-        }],
-        exporting: {
-            enabled: false
-        },
-
-        legend:{
-            enabled: false,
-        },
-    });
-});
-
-
+// segment chart
 var chart_segment;
 
-/**
- * Request data from the server, add it to the graph and set a timeout
- * to request again
- */
 function requestData_segment() {
     $.ajax({
         url: '/live-segment',
         success: function(point) {
             var series = chart_segment.series[0],
                 shift = series.data.length > 20;
-            var dataSet = [{name: '긍정', y: 0}, {name: '부정', y: 0}];
+            var dataSet = [{name: '긍정 점수', y: 0}, {name: '부정 점수', y: 0}];
             dataSet[0].y = point[0];
             dataSet[1].y = point[1];
-            console.log("hello");
-            //chart_segment.series[0].legendItem = chart_segment.series[0].legendItem.destroy();
-            //chart_segment.series[0].legendGroup = chart_segment.series[0].legendGroup.destroy();
             chart_segment.series[0].setData(dataSet);
 
             chart_segment.redraw(false);
+            $("tspan").remove('#segment_text');
+
+            if(point[0] > 65){
+                //파이차트 중간에 텍스트 추가 후 상,하 센터 정렬
+                chart_segment.renderer.text('<div id = "segment_text"><p>긍정적</p></div>',null, null, chart_segment.resetZoom, {
+                    }).attr({
+                       align: 'center',
+                       verticalAlign: 'middle'
+                    }).add().css({fontSize: '25px', color: 'green'}).align({
+                       align: 'center',
+                       verticalAlign: 'middle',
+                       x: 5,
+                       y: 5
+                    }, false, null);
+            }
+            else if((point[0] <= 65) && (point[0] >= 30)){
+                //파이차트 중간에 텍스트 추가 후 상,하 센터 정렬
+                chart_segment.renderer.text('<div id = "segment_text"><p>보통</p></div>',null, null, chart_segment.resetZoom, {
+                    }).attr({
+                       align: 'center',
+                       verticalAlign: 'middle'
+                    }).add().css({fontSize: '25px', color: 'black'}).align({
+                       align: 'center',
+                       verticalAlign: 'middle',
+                       x: 5,
+                       y: 5
+                    }, false, null);
+            }
+            else{
+                //파이차트 중간에 텍스트 추가 후 상,하 센터 정렬
+                chart_segment.renderer.text('<div id = "segment_text"><p>부정적</p></div>',null, null, chart_segment.resetZoom, {
+                    }).attr({
+                       align: 'center',
+                       verticalAlign: 'middle'
+                    }).add().css({fontSize: '25px', color: 'red'}).align({
+                       align: 'center',
+                       verticalAlign: 'middle',
+                       x: 5,
+                       y: 5
+                    }, false, null);
+            }
+
+            chart_segment.redraw();
             // call it again after one second
             setTimeout(requestData_segment, 1000);
         },
@@ -195,6 +176,8 @@ $(document).ready(function() {
   chart: {
       events: {
             load: requestData_segment
+
+
         },
       renderTo: 'segment-container',
       type: 'pie',
@@ -241,7 +224,7 @@ $(document).ready(function() {
      series: [{
        type: 'pie',
        name:'',
-       innerSize: '50%',//도넛 차트 지정시 내부 구멍 너비를 설정.(도넛 차트 필수 지정 옵션)
+       innerSize: '60%',//도넛 차트 지정시 내부 구멍 너비를 설정.(도넛 차트 필수 지정 옵션)
        data:[
        	{
        	  name: "긍정",

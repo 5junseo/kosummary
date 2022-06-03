@@ -4,31 +4,33 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Flask Highcharts Live Data Demo</title>
+    <title>SUMMARY</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
     <body>
     <div class = "background">
         <div class = "container">
             <div class = "first_line">
-                <div class = "title-1 jockeyone-50px">숫자로보는</div>
-                <div class = "title-2 jockeyone-50px">실시간 방송 피드백</div>
-                <!-- <div class = "search_box">
-                    <input type = "search_text" placeholder="검색어 입력">
-                        <div class = "search_circle">
-                            <img class = "loupe" src=https://s3.ap-northeast-2.amazonaws.com/cdn.wecode.co.kr/icon/search.png></img>
-                        </div>
-                </div> -->
+                <div class="title">
+                    <div class = "title-1 jockeyone-50px">숫자로보는</div>
+                    <div class = "title-2 jockeyone-50px">실시간 방송 피드백</div>
+                </div>
+
+                <div class = "streaming_title jockeyone-22px" id = "streaming_title">방송 제목</div>
             </div>
 
             <div class = "second_line">
                 <div class= "secondbox_1 secondbox">
                     <div class = "block_title1">
                         <div class = "number-1_wrapper">
-                            <div class = "number-1 jockeyone-22px">01</div>
+                            <div class = "number-1 jockeyone-18px">01</div>
                         </div>
-                        <div class = "text-1 jockeyone-18px">채팅 수</div>
+                        <div class = "text-1 jockeyone-22px">채팅 수</div>
                     </div>
-                    <div class = "contents">8122 개</div>
+                    <div class="imageblock">
+                        <img class = "first_line_img" src="{{ url_for('static', filename='image/chat.png') }}">
+                    </div>
+
+                    <div class = "contents jockeyone-50px" id = "numchat">0 개</div>
 
                 </div>
 
@@ -37,30 +39,49 @@
                         <div class = "number-1_wrapper">
                             <div class = "number-1 jockeyone-22px">02</div>
                         </div>
-                        <div class = "text-1 jockeyone-18px">얼마나 오래 함께 했을 까요?</div>
+                        <div class = "text-1 jockeyone-22px">얼마나 오래 함께 했을 까요?</div>
                     </div>
-                    <div class = "contents">1H. 10M. 15S.</div>
-                </div>
-
-                <div class = "secondbox_3 secondbox">
-                    <div class = "block_title1">
-                        <div class = "number-1_wrapper">
-                            <div class = "number-1 jockeyone-22px">03</div>
-                        </div>
-                        <div class = "text-1 jockeyone-18px">시청자들의 현재 반응은?</div>
+                    <div class="imageblock">
+                        <img class = "first_line_img" src="{{ url_for('static', filename='image/stopwatch.png') }}">
                     </div>
-                    <div class = "contents">좋아요 10개</div>
+                    <div class = "contents" id = "runtime">0H. 0M. 0S.</div>
                 </div>
 
                 <div class = "secondbox_4 secondbox">
                     <div class = "block_title1">
                         <div class = "number-1_wrapper">
+                            <div class = "number-1 jockeyone-22px">03</div>
+                        </div>
+                        <div class = "text-1 jockeyone-22px">시청자 수는?</div>
+                    </div>
+                    <div class = "contents" id = "viewers">현재: 0 명</div>
+                    <div class = "contents" id = "viewers_accumulate">누적: 0 명</div>
+
+                </div>
+
+                <div class = "secondbox_3 secondbox">
+                    <div class = "block_title1">
+                        <div class = "number-1_wrapper">
                             <div class = "number-1 jockeyone-22px">04</div>
                         </div>
-                        <div class = "text-1 jockeyone-18px">시청자 수는?</div>
+                        <div class = "text-1 jockeyone-22px">나의 방송 정보는?</div>
                     </div>
-                    <div class = "contents">10234 명</div>
+
+                    <div class = "content_info">
+                        <div class="thumbnail_box">
+                            <img class = "thumbnail" id = "thumbnail_img"  src="https://i.ytimg.com/vi/py_phbQxy5Y/mqdefault_live.jpg">
+                        </div>
+                        <div class="cur_info">
+                            <div id = "subscriber" class="jockeyone-22px">구독자: 10명</div>
+                            <div id = "like" class="jockeyone-22px">Like: 10개</div>
+                        </div>
+
+                    </div>
+
+
                 </div>
+
+
             </div>
 
             <div class = "third_line">
@@ -69,7 +90,7 @@
                         <div class = "number-1_wrapper">
                             <div class = "number-1 jockeyone-22px">05</div>
                         </div>
-                        <div class = "text-1 jockeyone-18px">자주 언급되는 단어는?</div>
+                        <div class = "text-1 jockeyone-22px">자주 언급되는 단어는?</div>
                     </div>
                     <div class="container-words" id="words-container"></div>
                 </div>
@@ -79,10 +100,15 @@
                         <div class = "number-1_wrapper">
                             <div class = "number-1 jockeyone-22px">06</div>
                         </div>
-                        <div class = "text-1 jockeyone-18px">5분전과 비교했을 때 시청자 반응 차이는?</div>
+                        <div>
+                            <div class = "text-2 jockeyone-22px">5분전과 비교했을 때 시청자 반응</div>
+                            <div class = "text-2 jockeyone-22px">변화는?</div>
+                        </div>
 
                     </div>
                     <div class="container-segment" id="segment-container"></div>
+
+
                 </div>
 
                 <div class = "thirdbox_3 thirdbox">
@@ -90,10 +116,10 @@
                         <div class = "number-1_wrapper">
                             <div class = "number-1 jockeyone-22px">07</div>
                         </div>
-                        <div class = "text-1 jockeyone-18px">시청자 수 변화는?</div>
+                        <div class = "text-1 jockeyone-22px">시청자 수 변화는?</div>
                     </div>
                     <div class="container-words" id="viewers-container"></div>
-
+                    <div class = "time_label jockeyone-18px">현재 분.초</div>
                 </div>
 
             </div>
@@ -106,6 +132,8 @@
     <script src="http://code.highcharts.com/modules/exporting.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
     <script src="/static/highcharts.js"></script>
+    <script src="/static/data.js"></script>
+
     <!-- Latest compiled and minified JavaScript -->
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
   </body>
