@@ -2,6 +2,8 @@ import pytchat
 import pafy
 import time
 from konlpy.tag import Okt
+
+import config
 from Sentiment import predict_pos_neg
 from database import dbModule
 from frequency import emoticon_del
@@ -9,6 +11,7 @@ from frequency import noun_counters
 from frequency import morph_counters
 
 okt = Okt()
+api_key = config.key
 
 
 def DB_counters_send(text):
@@ -20,7 +23,7 @@ def DB_counters_send(text):
 
 
 def Get_Api(key):
-    pafy.set_api_key('AIzaSyCzJGbHRKjQTMtOfVlxBMslPehk5qXHlQ0')
+    pafy.set_api_key(api_key)
 
     v_id = key
 
@@ -33,7 +36,7 @@ def Get_Api(key):
                 # print(f"{c.datetime} [{c.author.name}]- {c.message}")
                 # print(morph_counters(c.message))
 
-                x = morph_counters(c.message)
+                x = noun_counters(c.message)
 
                 for i in range(len(x)):
                     db_class = dbModule.Database()

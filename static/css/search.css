@@ -1,0 +1,120 @@
+@import url("https://fonts.googleapis.com/css?family=Jockey+One:400|Noto+Sans+Arabic:400");
+@import url('https://webfontworld.github.io/pretendard/Pretendard.css');
+
+
+:root {
+    --black:
+  rgba(0, 0, 0, 1);
+    --fuchsia-blue:
+  rgba(47,46,117,1);
+    --dull-lavender:
+  rgb(218, 217, 251);
+    --alice_blue:
+    rgb(223, 238, 251);
+
+    --white:
+  rgba(255, 255, 255, 1);
+
+    --font-size-s: 18px;
+    --font-size-m: 22px;
+    --font-size-l: 30px;
+    --font-size-xl: 50px;
+
+    --font-family-jockey_one: "Pretendard";
+    --font-family-noto_sans_arabic: "Pretendard";
+  }
+
+body{box-sizing: border-box; margin: 0px; background: var(--fuchsia-blue)}
+
+
+.notosansarabic-30px {
+    color: var(--white);
+    font-family: var(--font-family-noto_sans_arabic);
+    font-size: var(--font-size-l);
+    font-weight: 400;
+    font-style: normal;
+}
+.jockeyone-50px {
+    color: var(--fuchsia-blue);
+    font-family: var(--font-family-jockey_one);
+    font-size: var(--font-size-xl);
+    font-weight: 400;
+    font-style: normal;
+}
+.jockeyone-18px {
+color: var(--fuchsia-blue);
+font-family: var(--font-family-jockey_one);
+font-size: var(--font-size-s);
+font-weight: 400;
+font-style: normal;
+}
+.jockeyone-22px {
+color: var(--fuchsia-blue);
+font-family: var(--font-family-jockey_one);
+font-size: var(--font-size-m);
+font-weight: 400;
+font-style: normal;
+}
+.notosansarabic-18px {
+color: var(--black);
+font-family: var(--font-family-noto_sans_arabic);
+font-size: var(--font-size-m);
+font-weight: 400;
+font-style: normal;
+}
+
+
+.text-center{
+    display :flex;
+    width: 100%;
+    flex-direction: column;
+}
+
+.container1{
+    margin: 0 auto;
+    margin-top : 100px;
+    width: 90%;
+    justify-content: center;
+    background: white;
+    border-top-right-radius: 20px;
+    border-top-left-radius: 20px;
+}
+
+.logo_box{
+    display: flex;
+    justify-content: center;
+
+}
+
+.album {
+    margin-top : 120px;
+}
+
+.form-box{
+    border: 2px solid black;
+    width: 70%;
+    height: 45px;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+p{
+    margin-top: 25px;
+}
+.btn1{
+    background-color: rgb(255, 0, 0);
+    border: none;
+    font-size : 20px;
+    padding: 10px;
+    font-family: var(--font-family-jockey_one);
+    font-weight: 400;
+    font-style: normal;
+    border-radius:8px;
+
+}
+
+.btn1:hover{
+    background: var(--fuchsia-blue);
+    border: none;
+}
+
