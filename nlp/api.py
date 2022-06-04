@@ -4,7 +4,7 @@ import time
 from konlpy.tag import Okt
 
 import config
-from Sentiment import predict_pos_neg
+from sentiment import predict_pos_neg
 from database import dbModule
 from frequency import emoticon_del
 from frequency import noun_counters
@@ -51,6 +51,3 @@ def Get_Api(key):
         except KeyboardInterrupt:
             chat.terminate()
             break
-
-
-Get_Api("py_phbQxy5Y")

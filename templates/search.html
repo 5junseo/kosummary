@@ -36,10 +36,6 @@
                 <div class="logo_box">
                     <img class = "logo_image" src="{{ url_for('static', filename='image/title.png') }}">
                 </div>
-<!--                <form method="POST">-->
-<!--                    <input type="text">-->
-<!--                    <button type="submit">검색</button>-->
-<!--                </form>-->
                 <form method="POST">
                     <div class="input-grou b-3">
                         <input type="text" name="query" class="form-box">
@@ -52,23 +48,26 @@
                 <div class="album py-5 bg-light ">
             <div class="container ">
                 <div class="row ">
-                    {% for video in videos%}
-                    <div class="col-md-4 ">
-                        <div class="card mb-4 shadow-sm ">
-                            <img class="bd-placeholder-img card-img-top " width="100% " height="225 " src="{{video.thumbnail}} " preserveAspectRatio="xMidYMid slice " focusable="false " role="img " aria-label="Placeholder: Thumbnail "></img>
-                            <div class="card-body ">
-                                <p class="card-text ">{{video.title}}</p>
-                                <div class="d-flex justify-content-between align-items-center ">
-                                    <div class="btn-group ">
-                                        <a type="button " href="{{video.url}} " class="btn btn-sm btn-outline-danger " target="_blank " rel="noopener noreferrer ">View</a>
-                                        <a type="button " href="http://127.0.0.1:5000/?vi={{video.id}} " class="btn btn-sm btn-outline-danger " target="_blank " rel="noopener noreferrer ">Summary</a>
+                    {% if videos != 0 %}
+                        {% for video in videos%}
+                        <div class="col-md-4 ">
+                            <div class="card mb-4 shadow-sm ">
+                                <img class="bd-placeholder-img card-img-top " width="100% " height="225 " src="{{video.thumbnail}} " preserveAspectRatio="xMidYMid slice " focusable="false " role="img " aria-label="Placeholder: Thumbnail "></img>
+                                <div class="card-body ">
+                                    <p class="card-text ">{{video.title}}</p>
+                                    <div class="d-flex align-items-center ">
+                                        <div class="btn-group ">
+                                            <a type="button " href="{{video.url}} " class="btn btn-sm btn-outline-danger " target="_blank " rel="noopener noreferrer ">View</a>
+                                            <a type="button " href="http://127.0.0.1:5000/summary/?v={{video.id}} " class="btn btn-sm btn-outline-danger " target="_blank " rel="noopener noreferrer ">Summary</a>
+                                        </div>
                                     </div>
-                                    <small class="text-muted ">시청자수 : {{video.viewer}}명</small>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    {% endfor %}
+                        {% endfor %}
+                    {% else %}
+                        <p>검색결과가 없습니다.</p>
+                    {% endif %}
                 </div>
             </div>
         </div>

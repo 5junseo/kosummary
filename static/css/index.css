@@ -231,7 +231,20 @@ body{box-sizing: border-box; margin: 0px;}
     margin-left:30px;
     margin-top: 30px;
 }
-
+#viewers{
+    margin-top: 10px;
+}
+.contents2{
+    text-align:center;
+    display: flex;
+    justify-content: center;
+    margin-top : 5px;
+    color: 	#2F4F4F;
+    font-family: var(--font-family-jockey_one);
+    font-size: 20px;
+    font-weight: 500;
+    font-style: normal;
+}
 .contents{
     text-align:center;
     display: flex;
@@ -276,7 +289,7 @@ body{box-sizing: border-box; margin: 0px;}
 .content_info{
     display: flex;
     align-items: flex-end;
-    justify-content: space-between;
+    justify-content: center;
 }
 
 .thumbnail{
@@ -288,7 +301,7 @@ body{box-sizing: border-box; margin: 0px;}
 
 .cur_info{
     margin-bottom : 20px;
-    margin-right: 20px;
+    margin-right: 40px;
 }
 
 .highcharts-container {
