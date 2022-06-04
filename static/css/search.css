@@ -118,3 +118,19 @@ p{
     border: none;
 }
 
+.d-flex{
+    justify-content : center;
+}
+
+.row {
+    justify-content : center;
+}
+
+p{
+    color: var(--fuchsia-blue);
+font-family: var(--font-family-jockey_one);
+font-size: var(--font-size-m);
+font-weight: 400;
+font-style: normal;
+}
+

@@ -11,12 +11,22 @@ function getTime() {
 			return s;
 		}
 
+function getParameterByName(name) {
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
+var vid = getParameterByName('v');
+
+
 //words chart
 var chart;
 
 function requestData_words() {
     $.ajax({
-        url: '/live-words',
+        url: '/live-words/' + vid,
         success: function(point) {
             var series = chart.series[0],
                 shift = series.data.length > 20;
@@ -32,13 +42,17 @@ function requestData_words() {
             chart.isDirtyLegend = true;
             chart.redraw(false);
             // call it again after one second
-            setTimeout(requestData_words, 1000);
+            setTimeout(requestData_words, 5000);
         },
         cache: false
     });
 }
 
 $(document).ready(function() {
+    Highcharts.setOptions({
+		colors: ["#D61C4E", "#FAC213", "#F77E21", "#FEF9A7"  , "#9A86A4"]
+	});
+
     chart = new Highcharts.Chart({
         chart: {
             backgroundColor: '#DAD9FB',
@@ -83,20 +97,25 @@ $(document).ready(function() {
             title: "단어 수",
         },
         series: [{
-            name: 'Random data',
-            data: []
+            name: 'Word 1',
+            data: [
+            ]
         },{
-            name: 'Random data',
-            data: []
+            name: 'Word 2',
+            data: [
+            ]
         },{
-            name: 'Random data',
-            data: []
+            name: 'Word 3',
+            data: [
+            ]
         },{
-            name: 'Random data',
-            data: []
+            name: 'Word 4',
+            data: [
+            ]
         },{
-            name: 'Random data',
-            data: []
+            name: 'Word 5',
+            data: [
+            ]
         }],
         exporting: {
             enabled: false
@@ -111,7 +130,7 @@ var chart_segment;
 
 function requestData_segment() {
     $.ajax({
-        url: '/live-segment',
+        url: '/live-segment/'  + vid,
         success: function(point) {
             var series = chart_segment.series[0],
                 shift = series.data.length > 20;
@@ -125,11 +144,11 @@ function requestData_segment() {
 
             if(point[0] > 65){
                 //파이차트 중간에 텍스트 추가 후 상,하 센터 정렬
-                chart_segment.renderer.text('<div id = "segment_text"><p>긍정적</p></div>',null, null, chart_segment.resetZoom, {
+                chart_segment.renderer.text('<div id = "segment_text"><p>긍정</p></div>',null, null, chart_segment.resetZoom, {
                     }).attr({
                        align: 'center',
                        verticalAlign: 'middle'
-                    }).add().css({fontSize: '25px', color: 'green'}).align({
+                    }).add().css({fontSize: '25px', color: '#035397'}).align({
                        align: 'center',
                        verticalAlign: 'middle',
                        x: 5,
@@ -142,7 +161,7 @@ function requestData_segment() {
                     }).attr({
                        align: 'center',
                        verticalAlign: 'middle'
-                    }).add().css({fontSize: '25px', color: 'black'}).align({
+                    }).add().css({fontSize: '25px', color: 'gray'}).align({
                        align: 'center',
                        verticalAlign: 'middle',
                        x: 5,
@@ -151,11 +170,11 @@ function requestData_segment() {
             }
             else{
                 //파이차트 중간에 텍스트 추가 후 상,하 센터 정렬
-                chart_segment.renderer.text('<div id = "segment_text"><p>부정적</p></div>',null, null, chart_segment.resetZoom, {
+                chart_segment.renderer.text('<div id = "segment_text"><p>부정</p></div>',null, null, chart_segment.resetZoom, {
                     }).attr({
                        align: 'center',
                        verticalAlign: 'middle'
-                    }).add().css({fontSize: '25px', color: 'red'}).align({
+                    }).add().css({fontSize: '25px', color: '#FF5959'}).align({
                        align: 'center',
                        verticalAlign: 'middle',
                        x: 5,
@@ -165,7 +184,7 @@ function requestData_segment() {
 
             chart_segment.redraw();
             // call it again after one second
-            setTimeout(requestData_segment, 1000);
+            setTimeout(requestData_segment, 5000);
         },
         cache: false
     });
@@ -229,10 +248,12 @@ $(document).ready(function() {
        	{
        	  name: "긍정",
           y: 47,
+          color: "#035397",
         },
         {
           name: "부정",
           y: 34,
+          color: "#FF5959",
         }
         ],
 
