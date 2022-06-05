@@ -26,14 +26,10 @@ def live_words(video_id):
     cur1 = conn1.cursor()
 
     # 상위 5개 단어
-    sql = "SELECT word, COUNT(word) FROM summary.chatting WHERE videoid=%s GROUP BY word HAVING COUNT(word) > 1 ORDER BY count(word) DESC"
+    sql = "SELECT word, COUNT(word) FROM summary.chatting WHERE videoid=%s GROUP BY word HAVING COUNT(word) > 0 ORDER BY count(word) DESC"
     cur1.execute(sql, video_id)
     datas = cur1.fetchmany(5)
     conn1.commit()
-
-    # print(datas)
-    #     # for i in range(len(datas)):
-    #     #   print(datas[i][0])
 
     try:
         results = [[datas[0][0], datas[0][1]], [datas[1][0], datas[1][1]], [datas[2][0], datas[2][1]],
@@ -41,7 +37,6 @@ def live_words(video_id):
     except IndexError:
         results = 0
 
-    # results.sort(key=lambda x: x[1], reverse=True)
     response = make_response(json.dumps(results))
     response.content_type = 'application/json'
 
@@ -53,7 +48,7 @@ def live_words(video_id):
 def live_segment(video_id):
     cur = conn.cursor()
 
-    # 5분전 반응 조회
+    # 5분간 반응 조회
     sql = "SELECT reaction_score FROM summary.chatting WHERE videoid=%s AND created_at > date_add(now(), interval -5 minute)"
     cur.execute(sql, video_id)
     datas = cur.fetchall()
@@ -219,5 +214,4 @@ def index():
 
 
 if __name__ == "__main__":
-    # app.run(port=5000, debug=False)
-    app.run(host='127.0.0.1', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=False)

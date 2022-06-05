@@ -36,11 +36,11 @@ def noun_counters(line):
         else:
             noun = okt.noun(str(random.random()))
             temp = Counter(noun)
-            morph_list = temp.most_common(1)
+            noun_list = temp.most_common(1)
     else:
         noun = okt.noun(str(random.random()))
         temp = Counter(noun)
-        morph_list = temp.most_common(1)
+        noun_list = temp.most_common(1)
     return noun_list
 
 
