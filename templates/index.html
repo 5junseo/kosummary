@@ -54,8 +54,11 @@
                         </div>
                         <div class = "text-1 jockeyone-22px">시청자 수는?</div>
                     </div>
-                    <div class = "contents" id = "viewers">현재: 0 명</div>
-                    <div class = "contents" id = "viewers_accumulate">누적: 0 명</div>
+                    <div class="imageblock">
+                        <img class = "first_line_img" src="{{ url_for('static', filename='image/viwers.png') }}">
+                    </div>
+                    <div class = "contents2" id = "viewers">현재: 0 명</div>
+                    <div class = "contents2" id = "viewers_accumulate">누적: 0 명</div>
 
                 </div>
 
@@ -72,8 +75,10 @@
                             <img class = "thumbnail" id = "thumbnail_img"  src="https://i.ytimg.com/vi/py_phbQxy5Y/mqdefault_live.jpg">
                         </div>
                         <div class="cur_info">
-                            <div id = "subscriber" class="jockeyone-22px">구독자: 10명</div>
-                            <div id = "like" class="jockeyone-22px">Like: 10개</div>
+                            <div class="jockeyone-22px">구독자:</div>
+                            <div id = "subscriber" class="jockeyone-22px">10명</div>
+                            <div class="jockeyone-22px">좋아요:</div>
+                            <div id = "like" class="jockeyone-22px">10개</div>
                         </div>
 
                     </div>
@@ -101,7 +106,7 @@
                             <div class = "number-1 jockeyone-22px">06</div>
                         </div>
                         <div>
-                            <div class = "text-1 jockeyone-22px">5분간 시청자 반응 평균은?</div>
+                            <div class = "text-2 jockeyone-22px">5분간 시청자 반응 평균은?</div>
                         </div>
 
                     </div>
